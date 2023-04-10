@@ -24,7 +24,7 @@ class shopApp extends StatelessWidget {
           primary: Colors.purple.shade400,
           onPrimary: Colors.white,
           secondary: Colors.purple.shade900,
-          onSecondary: Colors.black,
+          onSecondary: Colors.white,
           error: Colors.red,
           onError: Colors.black,
           background: Colors.white,
@@ -35,9 +35,9 @@ class shopApp extends StatelessWidget {
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
         
         textTheme: TextTheme(
-          displayLarge: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-          titleLarge: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold),
-          bodyMedium: TextStyle(fontSize: 24.0,),
+          displayLarge: TextStyle(fontFamily: "Lato", fontSize: 72.0, fontWeight: FontWeight.bold),
+          titleLarge: TextStyle(fontFamily: "Lato", fontSize: 36.0, fontWeight: FontWeight.normal),
+          bodyMedium: TextStyle(fontFamily: "Lato", fontSize: 25.0, fontWeight: FontWeight.normal),
         ),
       ),
       title: "Shop App",
