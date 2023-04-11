@@ -6,6 +6,8 @@ import 'package:shop_app/screens/products_overview_screen.dart';
 
 void main() {
   return runApp(shopApp());
+  //hek
+  
 }
 
 class shopApp extends StatelessWidget {
