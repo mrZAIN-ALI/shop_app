@@ -49,23 +49,19 @@ class Products_overview_Screen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Products"),
       ),
-      body: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-
-        child: GridView.builder(
+      body:GridView.builder(
           padding: const EdgeInsets.all(10),
           itemCount: loaded_Products.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 3 / 2,
+              childAspectRatio: 3/2,
               crossAxisSpacing: 10,
-              mainAxisSpacing: 10),
+              mainAxisSpacing: 15),
           itemBuilder: (context, index) => Product_item(
               id: loaded_Products[index].id,
               title: loaded_Products[index].title,
               img_Url: loaded_Products[index].imageUrl),
         ),
-      ),
     );
   }
 }

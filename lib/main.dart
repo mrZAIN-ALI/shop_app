@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:shop_app/screens/products_overview_screen.dart';
+
+import './screens/products_overview_screen.dart';
+import './screens/product_Detail_Screen.dart';
 
 void main() {
   return runApp(shopApp());
@@ -42,6 +44,10 @@ class shopApp extends StatelessWidget {
       ),
       title: "Shop App",
       home: Products_overview_Screen(),
+
+      routes: {
+        ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
+      },
     );
   }
 }
