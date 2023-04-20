@@ -37,23 +37,26 @@ class product_Provider with ChangeNotifier {
     ),
   ];
 
-  bool isFavoritesRequested = false;
+  // bool isFavoritesRequested = false;
 
-  void showFavritesOnlu() {
-    isFavoritesRequested = true;
-    notifyListeners();
-  }
+  // void showFavritesOnlu() {
+  //   isFavoritesRequested = true;
+  //   notifyListeners();
+  // }
 
-  void showAll() {
-    isFavoritesRequested = false;
-    notifyListeners();
+  // void showAll() {
+  //   isFavoritesRequested = false;
+  //   notifyListeners();
+  // }
+
+  List<Product> getFavProducts() {
+    return _productsList.where((element) => element.isFavorite).toList();
   }
 
   List<Product> getProductList() {
-    if (isFavoritesRequested) {
-      return _productsList.where((element) => element.isFavorite).toList();
-    }
-
+    // if (isFavoritesRequested) {
+    //   return _productsList.where((element) => element.isFavorite).toList();
+    // }
     return [..._productsList];
   }
 

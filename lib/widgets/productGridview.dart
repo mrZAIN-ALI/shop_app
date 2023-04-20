@@ -8,10 +8,13 @@ import '../providers/productsModalProvider.dart';
 import './product_item.dart';
 
 class ProductGridView extends StatelessWidget {
+  final showFav;
+  ProductGridView(this.showFav);
+
   @override
   Widget build(BuildContext context) {
     final productData = context.watch<product_Provider>();
-    final loaded_Products = productData.getProductList();
+    final loaded_Products = showFav ? productData.getFavProducts() : productData.getProductList();
 
     return GridView.builder(
       padding: const EdgeInsets.all(10),

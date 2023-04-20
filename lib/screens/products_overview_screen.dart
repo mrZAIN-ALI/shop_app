@@ -13,8 +13,15 @@ enum FilterOptions {
   all,
 }
 
-class Products_overview_Screen extends StatelessWidget {
+class Products_overview_Screen extends StatefulWidget {
+  @override
+  State<Products_overview_Screen> createState() =>
+      _Products_overview_ScreenState();
+}
+
+class _Products_overview_ScreenState extends State<Products_overview_Screen> {
   // const Products_overview_Screen({super.key});
+  var _showFavoriteOnly = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +32,13 @@ class Products_overview_Screen extends StatelessWidget {
         actions: [
           PopupMenuButton(
             onSelected: (FilterOptions selectedOption) {
-              if (selectedOption == FilterOptions.Favorites) {
-                print(selectedOption);
-                productsHub.showFavritesOnlu();
-              } else if (selectedOption == FilterOptions.all) {
-                print(selectedOption);
-                productsHub.showAll();
-              }
+              setState(() {
+                if (selectedOption == FilterOptions.Favorites) {
+                  _showFavoriteOnly = true;
+                } else if (selectedOption == FilterOptions.all) {
+                  _showFavoriteOnly = false;
+                }
+              });
             },
             icon: Icon(
               Icons.more_vert,
@@ -51,7 +58,7 @@ class Products_overview_Screen extends StatelessWidget {
           )
         ],
       ),
-      body: ProductGridView(),
+      body: ProductGridView(_showFavoriteOnly),
     );
   }
 }
