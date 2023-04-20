@@ -16,13 +16,12 @@ void main() {
 
 class shopApp extends StatelessWidget {
   // const shopApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (ctx) => product_Provider(),
       child: MaterialApp(
-    
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
     
           fontFamily: "TimesNewRoman",

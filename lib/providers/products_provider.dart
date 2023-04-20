@@ -37,7 +37,13 @@ class product_Provider with ChangeNotifier {
     ),
   ];
 
+  bool isFavoritesRequested = false;
+
   List<Product> getProductList() {
+    if (isFavoritesRequested) {
+      return _productsList.where((element) => element.isFavorite).toList();
+    }
+
     return [..._productsList];
   }
 
