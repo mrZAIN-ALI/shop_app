@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
-import '../models/products.dart';
+import 'productsModalProvider.dart';
 
 class product_Provider with ChangeNotifier {
-  List<Product> productsList = [
+  List<Product> _productsList = [
     Product(
       id: 'p1',
       title: 'Red Shirt',
@@ -38,11 +38,15 @@ class product_Provider with ChangeNotifier {
   ];
 
   List<Product> getProductList() {
-    return [...productsList];
+    return [..._productsList];
   }
 
   void addProductToLost() {
     // _productsList.add(item);
     notifyListeners();
+  }
+
+  Product findByid(String id) {
+    return _productsList.firstWhere((prod) => prod.id == id);
   }
 }

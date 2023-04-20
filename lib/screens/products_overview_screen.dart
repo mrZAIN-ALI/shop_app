@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
-import '../models/products.dart';
+import '../providers/productsModalProvider.dart';
 import '../widgets/product_item.dart';
 import '../widgets/productGridview.dart';
 class Products_overview_Screen extends StatelessWidget {
