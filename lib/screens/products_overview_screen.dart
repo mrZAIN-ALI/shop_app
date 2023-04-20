@@ -25,7 +25,13 @@ class Products_overview_Screen extends StatelessWidget {
         actions: [
           PopupMenuButton(
             onSelected: (FilterOptions selectedOption) {
-              print(selectedOption);
+              if (selectedOption == FilterOptions.Favorites) {
+                print(selectedOption);
+                productsHub.showFavritesOnlu();
+              } else if (selectedOption == FilterOptions.all) {
+                print(selectedOption);
+                productsHub.showAll();
+              }
             },
             icon: Icon(
               Icons.more_vert,
