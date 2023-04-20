@@ -19,7 +19,8 @@ class Cart with ChangeNotifier {
   Map<String, CartItem> get items_map {
     return {..._items};
   }
-  //We are Using product id as key in 
+
+  //We are Using product id as key in
   void add_item(String p_id, String p_title, double p_price) {
     if (_items.containsKey(p_id)) {
       _items.update(
@@ -36,5 +37,9 @@ class Cart with ChangeNotifier {
         () => CartItem(id: p_id, title: p_title, quantity: 1, price: p_price),
       );
     }
+  }
+
+  int get itemCount {
+    return _items.length;
   }
 }
