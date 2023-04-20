@@ -39,6 +39,10 @@ class product_Provider with ChangeNotifier {
 
   bool isFavoritesRequested = false;
 
+  void toggleFvtRequest(){
+    isFavoritesRequested=!isFavoritesRequested;
+  }
+  
   List<Product> getProductList() {
     if (isFavoritesRequested) {
       return _productsList.where((element) => element.isFavorite).toList();

@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import './screens/products_overview_screen.dart';
 import './screens/product_Detail_Screen.dart';
-import './providers/products_provider.dart';
+import 'providers/product_Hub.dart';
 
 void main() {
   return runApp(shopApp());

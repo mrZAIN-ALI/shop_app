@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../providers/productsModalProvider.dart';
 import '../widgets/product_item.dart';
 import '../widgets/productGridview.dart';
-import '../providers/products_provider.dart';
+import '../providers/product_Hub.dart';
 
 enum FilterOptions {
   Favorites,
