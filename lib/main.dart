@@ -39,7 +39,7 @@ class shopApp extends StatelessWidget {
             primary: Colors.purple.shade400,
             onPrimary: Colors.white,
             secondary: Colors.purple.shade900,
-            onSecondary: Colors.white,
+            onSecondary: Colors.purple.shade300,
             error: Colors.red,
             onError: Colors.black,
             background: Colors.white,
