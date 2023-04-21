@@ -9,6 +9,7 @@ import '../widgets/product_item.dart';
 import '../widgets/productGridview.dart';
 import '../providers/product_Hub.dart';
 import '../widgets/Mybadge.dart';
+import 'cart_Screen.dart';
 
 enum FilterOptions {
   Favorites,
@@ -59,13 +60,18 @@ class _Products_overview_ScreenState extends State<Products_overview_Screen> {
               ),
             ],
           ),
-
           Consumer<Cart>(
             builder: (ctx, cart, ch) => MyBadge(
               child: ch as Widget,
               value: cart.itemCount.toString(),
             ),
-            child: Icon(Icons.shopping_cart),
+            // child: Icon(Icons.shopping_cart),
+            child: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {
+                Navigator.pushNamed(context,Cart_Screen.routeName);
+              },
+            ),
           ),
         ],
       ),

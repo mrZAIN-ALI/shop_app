@@ -16,7 +16,7 @@ class MyBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
-      children: [
+      children: [                                 
         child,
         Positioned(
           right: 8,
@@ -26,7 +26,7 @@ class MyBadge extends StatelessWidget {
             // color: Theme.of(context).accentColor,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
-              color: color != null ? color : Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
             ),
             constraints: BoxConstraints(
               minWidth: 16,

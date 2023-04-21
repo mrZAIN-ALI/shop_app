@@ -37,9 +37,19 @@ class Cart with ChangeNotifier {
         () => CartItem(id: p_id, title: p_title, quantity: 1, price: p_price),
       );
     }
+    notifyListeners();
   }
 
   int get itemCount {
     return _items.length;
+  }
+
+  double get totalAmount {
+    double total = 0.0;
+
+    _items.forEach((key, cartItem) {
+      total += cartItem.price * cartItem.quantity;
+    });
+    return total;
   }
 }
