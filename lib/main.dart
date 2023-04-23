@@ -37,7 +37,7 @@ class shopApp extends StatelessWidget {
           colorScheme: ColorScheme(
             brightness: Brightness.light,
             primary: Colors.purple.shade400,
-            onPrimary: Colors.white,
+            onPrimary: Color.fromARGB(255, 255, 255, 255),
             secondary: Colors.purple.shade900,
             onSecondary: Colors.purple.shade300,
             error: Colors.red,

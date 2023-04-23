@@ -18,6 +18,18 @@ class ProductDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("title"),
       ),
+      //
+      body: SingleChildScrollView(
+        child:Column(
+          children: [
+            Container(
+              child: Image.network(
+                
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
