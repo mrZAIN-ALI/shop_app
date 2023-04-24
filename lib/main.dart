@@ -9,7 +9,9 @@ import './screens/products_overview_screen.dart';
 import './screens/product_Detail_Screen.dart';
 import 'providers/product_Hub.dart';
 import './screens/cart_Screen.dart';
+import './providers/orders.dart';
 
+//
 void main() {
   return runApp(shopApp());
   //hek
@@ -27,8 +29,10 @@ class shopApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => Cart(),
         ),
+        ChangeNotifierProvider(
+          create: (ctx) => Orders(),
+        ),
       ],
-      
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -49,7 +53,7 @@ class shopApp extends StatelessWidget {
           ),
           // colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
 
-          textTheme: TextTheme(
+          textTheme: const TextTheme(
             displayLarge: TextStyle(
                 fontFamily: "Lato",
                 fontSize: 72.0,
@@ -62,13 +66,17 @@ class shopApp extends StatelessWidget {
                 fontFamily: "Lato",
                 fontSize: 25.0,
                 fontWeight: FontWeight.normal),
+            bodySmall: TextStyle(
+                fontFamily: "Lato",
+                fontSize: 20.0,
+                fontWeight: FontWeight.normal),
           ),
         ),
         title: "Shop App",
         home: Products_overview_Screen(),
         routes: {
           ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
-          Cart_Screen.routeName:(context) => Cart_Screen(),
+          Cart_Screen.routeName: (context) => Cart_Screen(),
         },
       ),
     );

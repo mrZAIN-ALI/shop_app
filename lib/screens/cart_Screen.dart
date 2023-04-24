@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/cart.dart' show Cart;
 import '../widgets/cart_item.dart' as ca;
+import '../providers/orders.dart';
 
 class Cart_Screen extends StatelessWidget {
   // const Cart_Screen({super.key});
@@ -37,7 +38,9 @@ class Cart_Screen extends StatelessWidget {
                   Spacer(),
                   FloatingActionButton.extended(
                     onPressed: () {
-                      print("object");
+                      Provider.of<Orders>(context, listen: false).addOrder(
+                          cart.items_map.values.toList(), cart.totalAmount);
+                      cart.clear();
                     },
                     label: Text("Payment"),
                     icon: Icon(Icons.paypal_outlined),
