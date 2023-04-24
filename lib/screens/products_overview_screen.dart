@@ -10,6 +10,7 @@ import '../widgets/productGridview.dart';
 import '../providers/product_Hub.dart';
 import '../widgets/Mybadge.dart';
 import 'cart_Screen.dart';
+import '../widgets/app_drawer.dart';
 
 enum FilterOptions {
   Favorites,
@@ -75,7 +76,10 @@ class _Products_overview_ScreenState extends State<Products_overview_Screen> {
           ),
         ],
       ),
+      //
       body: ProductGridView(_showFavoriteOnly),
+      //
+      drawer: AppDrawer(),
     );
   }
 }
