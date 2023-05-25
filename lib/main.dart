@@ -18,7 +18,7 @@ void main() {
 }
 
 class shopApp extends StatelessWidget {
-  // const shopApp({super.key});
+  
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -83,3 +83,5 @@ class shopApp extends StatelessWidget {
     );
   }
 }
+
+
