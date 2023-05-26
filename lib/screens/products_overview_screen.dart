@@ -31,55 +31,57 @@ class _Products_overview_ScreenState extends State<Products_overview_Screen> {
     final productsHub = Provider.of<product_Provider>(context);
     final cart = Provider.of<Cart>(context, listen: false);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Products"),
-        actions: [
-          PopupMenuButton(
-            onSelected: (FilterOptions selectedOption) {
-              setState(() {
-                if (selectedOption == FilterOptions.Favorites) {
-                  _showFavoriteOnly = true;
-                } else if (selectedOption == FilterOptions.all) {
-                  _showFavoriteOnly = false;
-                }
-              });
-            },
-            icon: Icon(
-              Icons.more_vert,
-            ),
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                child: Text("Only Favorities"),
-                value: FilterOptions.Favorites,
-              ),
-              PopupMenuItem(
-                child: Text(
-                  "Show All",
-                ),
-                value: FilterOptions.all,
-              ),
-            ],
-          ),
-          Consumer<Cart>(
-            builder: (ctx, cart, ch) => MyBadge(
-              child: ch as Widget,
-              value: cart.itemCount.toString(),
-            ),
-            // child: Icon(Icons.shopping_cart),
-            child: IconButton(
-              icon: Icon(Icons.shopping_cart),
-              onPressed: () {
-                Navigator.pushNamed(context,Cart_Screen.routeName);
+    return ScaffoldMessenger(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Products"),
+          actions: [
+            PopupMenuButton(
+              onSelected: (FilterOptions selectedOption) {
+                setState(() {
+                  if (selectedOption == FilterOptions.Favorites) {
+                    _showFavoriteOnly = true;
+                  } else if (selectedOption == FilterOptions.all) {
+                    _showFavoriteOnly = false;
+                  }
+                });
               },
+              icon: Icon(
+                Icons.more_vert,
+              ),
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  child: Text("Only Favorities"),
+                  value: FilterOptions.Favorites,
+                ),
+                PopupMenuItem(
+                  child: Text(
+                    "Show All",
+                  ),
+                  value: FilterOptions.all,
+                ),
+              ],
             ),
-          ),
-        ],
+            Consumer<Cart>(
+              builder: (ctx, cart, ch) => MyBadge(
+                child: ch as Widget,
+                value: cart.itemCount.toString(),
+              ),
+              // child: Icon(Icons.shopping_cart),
+              child: IconButton(
+                icon: Icon(Icons.shopping_cart),
+                onPressed: () {
+                  Navigator.pushNamed(context, Cart_Screen.routeName);
+                },
+              ),
+            ),
+          ],
+        ),
+        //
+        body: ProductGridView(_showFavoriteOnly),
+        //
+        drawer: AppDrawer(),
       ),
-      //
-      body: ProductGridView(_showFavoriteOnly),
-      //
-      drawer: AppDrawer(),
     );
   }
 }
