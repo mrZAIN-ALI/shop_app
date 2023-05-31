@@ -17,6 +17,7 @@ class UseerProductItem extends StatelessWidget {
     
         ),
         trailing: Container(
+          width: 100,
         child: Row(
          children: [
            IconButton(
@@ -24,13 +25,17 @@ class UseerProductItem extends StatelessWidget {
             onPressed: (){
               
             },
+
+            color: Theme.of(context).colorScheme.primary,
           ),
+           SizedBox(width: 10.0),
            IconButton(
             icon: Icon(Icons.delete),
             onPressed: (){
               
             },
-          ),
+            color: Theme.of(context).colorScheme.error,
+          ), 
          ],
         ),
         ),
