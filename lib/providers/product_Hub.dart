@@ -60,12 +60,28 @@ class product_Provider with ChangeNotifier {
     return [..._productsList];
   }
 
-  void addProductToLost() {
-    // _productsList.add(item);
+  void addProductToLost(Product newProduct) {
+    final addThisProdcut = Product(
+        description: newProduct.description,
+        id: DateTime.now().toString(),
+        imageUrl: newProduct.imageUrl,
+        price: newProduct.price,
+        title: newProduct.title);
+    _productsList.add(addThisProdcut);
     notifyListeners();
   }
 
   Product findByid(String id) {
     return _productsList.firstWhere((prod) => prod.id == id);
+  }
+
+  void updateProduct(String id,Product updatedProd){
+    final indexOfProductToUPdate=_productsList.indexWhere((element) => element.id==id);
+    if(indexOfProductToUPdate>=0){
+      _productsList[indexOfProductToUPdate]=updatedProd;
+    }else{
+      print("Invalid index for product list for update request");
+    }
+
   }
 }

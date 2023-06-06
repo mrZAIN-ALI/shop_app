@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 import '../providers/productsModalProvider.dart';
+import '../providers/product_Hub.dart';
 
 class EditPrudcutScreen extends StatefulWidget {
   // const EditPrudcutScreen({super.key});
@@ -18,7 +20,13 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
   final _formKey = GlobalKey<FormState>();
   var _editedProduct =
       Product(id: "", title: "", description: "", price: 0, imageUrl: "");
-  String _imgUrl = "";
+  var initValues = {
+    "title": "",
+    "description": "",
+    "price": "",
+    "imageUrl": ""
+  };
+  var _isInit = true;
   void dispose() {
     _ImageUrlFocuNode.removeListener(_updatImageurlFun);
     _priceFocusNode.dispose();
@@ -41,6 +49,27 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
     }
   }
 
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    if (_isInit) {
+      final _productId = ModalRoute.of(context)?.settings.arguments as String?;
+      if (_productId != null) {
+        _editedProduct = Provider.of<product_Provider>(context, listen: false)
+            .findByid(_productId);
+        initValues = {
+          "title": _editedProduct.title,
+          "description": _editedProduct.description,
+          "price": _editedProduct.price.toString(),
+          "imageUrl": _editedProduct.imageUrl,
+        };
+        _imageUrlController.text=_editedProduct.imageUrl;
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
   // void updateImageUrl() {
   //   if (!_imageUrlController.text.isEmpty) {
   //     setState(() {
@@ -58,12 +87,14 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
         return null;
       } else {
         currentStatofForm.save();
-        print(_editedProduct.description);
-        print(_editedProduct.id);
-        print(_editedProduct.imageUrl);
-        // print(_editedProduct.isFavorite);
-        print(_editedProduct.price);
-        print(_editedProduct.title);
+        if(_editedProduct.id!=""){
+           Provider.of<product_Provider>(context, listen: false)
+            .updateProduct(_editedProduct.id,_editedProduct);
+        }else{          
+        Provider.of<product_Provider>(context, listen: false)
+            .addProductToLost(_editedProduct);
+        }
+        Navigator.of(context).pop();
       }
     }
   }
@@ -72,7 +103,7 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Product"),
+        title: Text("Add Product"),
         actions: [
           IconButton(
             onPressed: _saveFormData,
@@ -100,7 +131,9 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
                       title: newValue!,
                       description: _editedProduct.description,
                       price: _editedProduct.price,
-                      imageUrl: _editedProduct.imageUrl);
+                      imageUrl: _editedProduct.imageUrl,
+                      isFavorite: _editedProduct.isFavorite,
+                      );
                 },
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -109,6 +142,7 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
                     return null;
                   }
                 },
+                initialValue: initValues["title"],
               ),
               TextFormField(
                 textInputAction: TextInputAction.next,
@@ -126,25 +160,26 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
                       title: _editedProduct.title,
                       description: _editedProduct.description,
                       price: double.parse(newValue!),
-                      imageUrl: _editedProduct.imageUrl);
+                      imageUrl: _editedProduct.imageUrl,
+                      isFavorite: _editedProduct.isFavorite,
+                      );
                 },
                 validator: (value) {
-                  if(value!= null){
-                    if(value.isEmpty){
+                  if (value != null) {
+                    if (value.isEmpty) {
                       return "Please Fill the Price Field";
-                    }else if(double.tryParse(value)==null){
+                    } else if (double.tryParse(value) == null) {
                       return "Please enter valid numbers.";
-                    }
-                    else if(double.parse(value)<0){
+                    } else if (double.parse(value) < 0) {
                       return "Please Enter Value greater than zero.";
-                    }
-                    else{
+                    } else {
                       return null;
                     }
-                  }else{
+                  } else {
                     return "Please Enter non null value.";
                   }
                 },
+                initialValue: initValues["price"],
               ),
               TextFormField(
                 decoration: const InputDecoration(
@@ -159,21 +194,23 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
                       title: _editedProduct.title,
                       description: newValue!,
                       price: _editedProduct.price,
-                      imageUrl: _editedProduct.imageUrl);
+                      imageUrl: _editedProduct.imageUrl,
+                      isFavorite: _editedProduct.isFavorite,
+                      );
                 },
                 validator: (value) {
-                  if(value== null){
+                  if (value == null) {
                     return "Please Fill non null value.";
                   }
-                  if(value.isEmpty){
+                  if (value.isEmpty) {
                     return "Please Fill in Descriptuion.";
-                  }
-                  else if(value.length<10){
+                  } else if (value.length < 10) {
                     return "Please Fill dicription greater  than 10 characters.";
-                  }else{
+                  } else {
                     return null;
                   }
                 },
+                initialValue: initValues["description"],
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -224,22 +261,24 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
                             title: _editedProduct.title,
                             description: _editedProduct.description,
                             price: _editedProduct.price,
-                            imageUrl: newValue!);
+                            imageUrl: newValue!,
+                            isFavorite: _editedProduct.isFavorite,
+                            );
                       },
                       validator: (value) {
-                        if(value== null){
+                        if (value == null) {
                           return "Please Fill non null value.";
                         }
-                        if(value.isEmpty){
+                        if (value.isEmpty) {
                           return "Please Fill in Image Url.";
-                        }
-                        else if(!value.startsWith("https://")&& !value.startsWith("http://")){
+                        } else if (!value.startsWith("https://") &&
+                            !value.startsWith("http://")) {
                           return "It does not seems to be a URL ";
-                        }
-                        else{
+                        } else {
                           return null;
                         }
                       },
+                      
                     ),
                   ),
                 ],
