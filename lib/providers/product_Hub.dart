@@ -1,3 +1,6 @@
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 import 'productsModalProvider.dart';
 
@@ -61,6 +64,19 @@ class product_Provider with ChangeNotifier {
   }
 
   void addProductToLost(Product newProduct) {
+    final url = Uri.http(
+      "https://console.firebase.google.com/project/my-first-project-8a21a/storage/my-first-project-8a21a.appspot.com/files",
+      "/products.jason",
+    );
+    http.post(
+      url,
+      body: {
+        "title": newProduct.title,
+        "description": newProduct.description,
+        "price": newProduct.price,
+        "imageUrl": newProduct.imageUrl,
+      },
+    );
     final addThisProdcut = Product(
         description: newProduct.description,
         id: DateTime.now().toString(),
@@ -75,17 +91,17 @@ class product_Provider with ChangeNotifier {
     return _productsList.firstWhere((prod) => prod.id == id);
   }
 
-  void updateProduct(String id,Product updatedProd){
-    final indexOfProductToUPdate=_productsList.indexWhere((element) => element.id==id);
-    if(indexOfProductToUPdate>=0){
-      _productsList[indexOfProductToUPdate]=updatedProd;
-    }else{
+  void updateProduct(String id, Product updatedProd) {
+    final indexOfProductToUPdate =
+        _productsList.indexWhere((element) => element.id == id);
+    if (indexOfProductToUPdate >= 0) {
+      _productsList[indexOfProductToUPdate] = updatedProd;
+    } else {
       print("Invalid index for product list for update request");
     }
-
   }
 
-  void deleteProductById(String id){
+  void deleteProductById(String id) {
     _productsList.removeWhere((element) => element.id == id);
     notifyListeners();
   }
