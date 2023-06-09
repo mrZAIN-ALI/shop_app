@@ -63,28 +63,47 @@ class product_Provider with ChangeNotifier {
     return [..._productsList];
   }
 
-  void addProductToLost(Product newProduct) {
-    final url = Uri.http(
-      "https://console.firebase.google.com/project/my-first-project-8a21a/storage/my-first-project-8a21a.appspot.com/files",
-      "/products.jason",
+  void addProductToLost(Product newProduct) async {
+    final url = Uri.parse(
+      "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json",
     );
-    http.post(
+
+    final response = await http
+        .post(
       url,
-      body: {
-        "title": newProduct.title,
-        "description": newProduct.description,
-        "price": newProduct.price,
-        "imageUrl": newProduct.imageUrl,
+      body: json.encode(
+        {
+          "title": newProduct.title,
+          "description": newProduct.description,
+          "price": newProduct.price,
+          "imageUrl": newProduct.imageUrl,
+          "isFvrt": newProduct.isFavorite,
+        },
+      ),
+    )
+        .then(
+      (value) {
+        final addThisProdcut = Product(
+          description: newProduct.description,
+          id: DateTime.now().toString(),
+          imageUrl: newProduct.imageUrl,
+          price: newProduct.price,
+          title: newProduct.title,
+         );
+        _productsList.add(addThisProdcut);
+        notifyListeners();
+        print(
+          json.decode(value.body),
+        );
+        if (value.statusCode == 200) {
+          // Request successful
+          print("Product added successfully!");
+        } else {
+          // Request failed
+          print("Failed to add product. Error: ${value.statusCode}");
+        }
       },
     );
-    final addThisProdcut = Product(
-        description: newProduct.description,
-        id: DateTime.now().toString(),
-        imageUrl: newProduct.imageUrl,
-        price: newProduct.price,
-        title: newProduct.title);
-    _productsList.add(addThisProdcut);
-    notifyListeners();
   }
 
   Product findByid(String id) {
