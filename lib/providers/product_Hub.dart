@@ -63,13 +63,12 @@ class product_Provider with ChangeNotifier {
     return [..._productsList];
   }
 
-  void addProductToLost(Product newProduct) async {
+  Future<void> addProductToLost(Product newProduct) async {
     final url = Uri.parse(
       "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json",
     );
 
-    final response = await http
-        .post(
+    return http.post(
       url,
       body: json.encode(
         {
@@ -85,14 +84,14 @@ class product_Provider with ChangeNotifier {
       (value) {
         final addThisProdcut = Product(
           description: newProduct.description,
-          id: DateTime.now().toString(),
           imageUrl: newProduct.imageUrl,
           price: newProduct.price,
           title: newProduct.title,
-         );
+          id: json.decode(value.body)["name"],
+        );
         _productsList.add(addThisProdcut);
         notifyListeners();
-        // hell'          
+        // hell'
         print(
           json.decode(value.body),
         );
