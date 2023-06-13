@@ -65,45 +65,46 @@ class product_Provider with ChangeNotifier {
 
   Future<void> addProductToLost(Product newProduct) async {
     final url = Uri.parse(
-      "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json",
+      "https://demo1-abf1c-default-rtdb.firebaseio.com/products",
     );
+    try {
+      final response = await http.post(
+        url,
+        body: json.encode(
+          {
+            "title": newProduct.title,
+            "description": newProduct.description,
+            "price": newProduct.price,
+            "imageUrl": newProduct.imageUrl,
+            "isFvrt": newProduct.isFavorite,
+          },
+        ),
+      );
 
-    return http.post(
-      url,
-      body: json.encode(
-        {
-          "title": newProduct.title,
-          "description": newProduct.description,
-          "price": newProduct.price,
-          "imageUrl": newProduct.imageUrl,
-          "isFvrt": newProduct.isFavorite,
-        },
-      ),
-    )
-        .then(
-      (value) {
-        final addThisProdcut = Product(
-          description: newProduct.description,
-          imageUrl: newProduct.imageUrl,
-          price: newProduct.price,
-          title: newProduct.title,
-          id: json.decode(value.body)["name"],
-        );
-        _productsList.add(addThisProdcut);
-        notifyListeners();
-        // hell'
-        print(
-          json.decode(value.body),
-        );
-        if (value.statusCode == 200) {
-          // Request successful
-          print("Product added successfully!");
-        } else {
-          // Request failed
-          print("Failed to add product. Error: ${value.statusCode}");
-        }
-      },
-    );
+      final addThisProdcut = Product(
+        description: newProduct.description,
+        imageUrl: newProduct.imageUrl,
+        price: newProduct.price,
+        title: newProduct.title,
+        id: json.decode(response.body)["name"],
+      );
+      _productsList.add(addThisProdcut);
+      notifyListeners();
+      // hell'
+      print(
+        json.decode(response.body),
+      );
+      if (response.statusCode == 200) {
+        // Request successful
+        print("Product added successfully!");
+      } else {
+        // Request failed
+        print("Failed to add product. Error: ${response.statusCode}");
+      }
+    } catch (error) {
+      print(error.toString());
+      throw error;
+    }
   }
 
   Product findByid(String id) {

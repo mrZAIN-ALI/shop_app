@@ -78,7 +78,7 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
   //     });
   //   }
   // }
-  void _saveFormData() {
+  Future<void> _saveFormData() async {
     final currentStatofForm = _formKey.currentState;
 
     setState(
@@ -102,14 +102,31 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
           });
           Navigator.of(context).pop();
         } else {
-          Provider.of<product_Provider>(context, listen: false)
-              .addProductToLost(_editedProduct)
-              .then((value) {
-                setState(() {
-                  _isLoading=false;
-                });
-                Navigator.of(context).pop();
-              },);
+          try {
+            await Provider.of<product_Provider>(context, listen: false)
+                .addProductToLost(_editedProduct);
+          } catch (err) {
+            return await showDialog<Null>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text("An error has occurred"),
+                content: Text("Aww Snap! Fail to add product"),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Text("okay"),
+                  ),
+                ],
+              ),
+            );
+          } finally {
+            setState(() {
+              _isLoading = false;
+            });
+            Navigator.of(context).pop();
+          }
         }
       }
     }
