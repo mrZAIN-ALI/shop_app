@@ -95,12 +95,8 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
       } else {
         currentStatofForm.save();
         if (_editedProduct.id != "") {
-          Provider.of<product_Provider>(context, listen: false)
+          await Provider.of<product_Provider>(context, listen: false)
               .updateProduct(_editedProduct.id, _editedProduct);
-          setState(() {
-            _isLoading = false;
-          });
-          Navigator.of(context).pop();
         } else {
           try {
             await Provider.of<product_Provider>(context, listen: false)
@@ -121,13 +117,20 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
                 ],
               ),
             );
-          } finally {
-            setState(() {
-              _isLoading = false;
-            });
-            Navigator.of(context).pop();
           }
+          // finally {
+          //   setState(() {
+          //     _isLoading = false;
+          //   });
+          //   Navigator.of(context).pop();
+          // }
         }
+        setState(
+          () {
+            _isLoading = false;
+          },
+        );
+        Navigator.of(context).pop();
       }
     }
   }
@@ -136,7 +139,7 @@ class _EditPrudcutScreenState extends State<EditPrudcutScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Product"),
+        title: Text("Edit Product"),
         actions: [
           IconButton(
             onPressed: _saveFormData,
