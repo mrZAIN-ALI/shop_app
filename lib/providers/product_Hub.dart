@@ -63,9 +63,21 @@ class product_Provider with ChangeNotifier {
     return [..._productsList];
   }
 
+  Future<void> fetchProducts() async {
+    final url = Uri.parse(
+      "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json",
+    );
+    try {
+      final response = await http.get(url);
+      print(json.decode(response.body));
+    } catch (err) {
+      throw err;
+    }
+  }
+
   Future<void> addProductToLost(Product newProduct) async {
     final url = Uri.parse(
-      "https://demo1-abf1c-default-rtdb.firebaseio.com/products",
+      "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json",
     );
     try {
       final response = await http.post(
