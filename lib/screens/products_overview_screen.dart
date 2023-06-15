@@ -38,16 +38,27 @@ class _Products_overview_ScreenState extends State<Products_overview_Screen> {
 
   var _showFavoriteOnly = false;
   var _isInitialized = true;
+  var _isLoading = false;
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
-    if(_isInitialized){
-      Provider.of<product_Provider>(context).fetchProducts();
+    if (_isInitialized) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<product_Provider>(context).fetchProducts().then(
+        (_) {
+          setState(() {
+            _isLoading = false;
+          });
+        },
+      );
     }
-    _isInitialized=false;
+    _isInitialized = false;
     super.didChangeDependencies();
   }
+
   @override
   Widget build(BuildContext context) {
     final productsHub = Provider.of<product_Provider>(context);
@@ -100,7 +111,13 @@ class _Products_overview_ScreenState extends State<Products_overview_Screen> {
           ],
         ),
         //
-        body: ProductGridView(_showFavoriteOnly),
+        body: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : ProductGridView(
+                _showFavoriteOnly,
+              ),
         //
         drawer: AppDrawer(),
       ),
