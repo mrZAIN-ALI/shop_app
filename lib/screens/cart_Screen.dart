@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,16 +38,7 @@ class Cart_Screen extends StatelessWidget {
                     ),
                   ),
                   Spacer(),
-                  FloatingActionButton.extended(
-                    onPressed: () {
-                      Provider.of<Orders>(context, listen: false).addOrder(
-                          cart.items_map.values.toList(), cart.totalAmount);
-                      cart.clear();
-                    },
-                    label: Text("Payment"),
-                    icon: Icon(Icons.paypal_outlined),
-                    splashColor: Theme.of(context).colorScheme.onSecondary,
-                  ),
+                  orderButton(cart: cart),
                 ],
               ),
             ),
@@ -65,6 +58,42 @@ class Cart_Screen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class orderButton extends StatefulWidget {
+  const orderButton({
+    super.key,
+    required this.cart,
+  });
+
+  final Cart cart;
+
+  @override
+  State<orderButton> createState() => _orderButtonState();
+}
+
+class _orderButtonState extends State<orderButton> {
+  var _isLoading= false;
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton.extended(
+      onPressed: (widget.cart.totalAmount<=0 || _isLoading)? null : () async {
+        setState(() {
+          _isLoading=true;
+        });
+        await Provider.of<Orders>(context, listen: false).addOrder(
+            widget.cart.items_map.values.toList(), widget.cart.totalAmount,);
+            setState(() {
+              _isLoading=false;
+            });
+
+        widget.cart.clear();
+      },
+      label: _isLoading? CircularProgressIndicator(): Text("Payment"),
+      icon: Icon(Icons.paypal_outlined),
+      splashColor: Theme.of(context).colorScheme.onSecondary,
     );
   }
 }
