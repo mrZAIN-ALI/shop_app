@@ -71,6 +71,7 @@ class Orders with ChangeNotifier {
     List<OrderItem> dummyList = [];
     final orderedProd = json.decode(response.body) as Map<String, dynamic>;
     if(orderedProd== null){
+      print("lol");
       return;
     }
     orderedProd.forEach(

@@ -33,6 +33,7 @@ class _OrderItemState extends State<OrderItem> {
                 ),
               ),
               trailing: FloatingActionButton.extended(
+                heroTag:widget.order.amount.toString() ,
                 onPressed: () {
                   setState(() {
                     _expanded = !_expanded;
