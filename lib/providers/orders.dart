@@ -65,8 +65,36 @@ class Orders with ChangeNotifier {
       "https://demo1-abf1c-default-rtdb.firebaseio.com/orders.json",
     );
     final response = await http.get(url);
-    print(
-      json.decode(response.body),
+    // print(
+    //   json.decode(response.body),
+    // );
+    List<OrderItem> dummyList = [];
+    final orderedProd = json.decode(response.body) as Map<String, dynamic>;
+    if(orderedProd== null){
+      return;
+    }
+    orderedProd.forEach(
+      (key, value) {
+        dummyList.add(
+          OrderItem(
+            id: key,
+            amount: value["amount"],
+            dateTime: DateTime.parse(value["time"]),
+            items: (value["cartItems"] as List<dynamic>)
+                .map(
+                  (item) => CartItem(
+                    id: item["id"],
+                    title: item["title"],
+                    quantity: item["quantity"],
+                    price: item["price"],
+                  ),
+                )
+                .toList(),
+          ),
+        );
+      },
     );
+    _orders=dummyList.reversed.toList();
+    notifyListeners();
   }
 }
