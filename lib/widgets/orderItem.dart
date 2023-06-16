@@ -62,7 +62,7 @@ class _OrderItemState extends State<OrderItem> {
                               ),
                               Text(
                                 e.quantity.toString() +
-                                    "X \$" +
+                                    "X   \$" +
                                     e.price.toString(),
                               ),
                             ],

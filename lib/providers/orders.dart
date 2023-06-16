@@ -59,4 +59,14 @@ class Orders with ChangeNotifier {
     );
     notifyListeners();
   }
+
+  Future<void> fetchAndSetOrder() async {
+    final url = Uri.parse(
+      "https://demo1-abf1c-default-rtdb.firebaseio.com/orders.json",
+    );
+    final response = await http.get(url);
+    print(
+      json.decode(response.body),
+    );
+  }
 }
