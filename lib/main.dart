@@ -3,7 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/cart.dart';
 
 import './screens/products_overview_screen.dart';
 import './screens/product_Detail_Screen.dart';
@@ -14,10 +13,12 @@ import './screens/order_Screens.dart';
 import './screens/user_product_screen.dart';
 import './screens/edit_product_screen.dart';
 import './screens/auth_Screen.dart';
+import '../providers/cart.dart';
+import '../providers/auth.dart';
+
 //
 void main() {
   return runApp(shopApp());
-  
 }
 
 class shopApp extends StatelessWidget {
@@ -34,6 +35,9 @@ class shopApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (ctx) => Orders(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Auth(),
         ),
       ],
       child: MaterialApp(
@@ -80,9 +84,9 @@ class shopApp extends StatelessWidget {
         routes: {
           ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
           Cart_Screen.routeName: (context) => Cart_Screen(),
-          OrderScreen.routeName:(context) => OrderScreen(),
-          UserProductsScreen.routeName:(context) => UserProductsScreen(),
-          EditPrudcutScreen.routeName:(context) => EditPrudcutScreen(),
+          OrderScreen.routeName: (context) => OrderScreen(),
+          UserProductsScreen.routeName: (context) => UserProductsScreen(),
+          EditPrudcutScreen.routeName: (context) => EditPrudcutScreen(),
         },
       ),
     );
