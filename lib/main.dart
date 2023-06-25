@@ -26,69 +26,71 @@ class shopApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (ctx) => product_Provider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => Cart(),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => Orders(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => Auth(),
-        ),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          fontFamily: "TimesNewRoman",
-
-          colorScheme: ColorScheme(
-            brightness: Brightness.light,
-            primary: Colors.purple.shade400,
-            onPrimary: Color.fromARGB(255, 255, 255, 255),
-            secondary: Colors.purple.shade900,
-            onSecondary: Colors.purple.shade300,
-            error: Colors.red,
-            onError: Colors.black,
-            background: Colors.white,
-            onBackground: Colors.red.shade300,
-            surface: Colors.white,
-            onSurface: Color.fromARGB(255, 238, 155, 82),
+        providers: [
+          ChangeNotifierProvider(
+            create: (ctx) => product_Provider(),
           ),
-          // colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
-
-          textTheme: const TextTheme(
-            displayLarge: TextStyle(
-                fontFamily: "Lato",
-                fontSize: 72.0,
-                fontWeight: FontWeight.bold),
-            titleLarge: TextStyle(
-                fontFamily: "Lato",
-                fontSize: 36.0,
-                fontWeight: FontWeight.normal),
-            bodyMedium: TextStyle(
-                fontFamily: "Lato",
-                fontSize: 25.0,
-                fontWeight: FontWeight.normal),
-            bodySmall: TextStyle(
-                fontFamily: "Lato",
-                fontSize: 20.0,
-                fontWeight: FontWeight.normal),
+          ChangeNotifierProvider(
+            create: (context) => Cart(),
           ),
-        ),
-        title: "Shop App",
-        home: AuthScreen(),
-        routes: {
-          ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
-          Cart_Screen.routeName: (context) => Cart_Screen(),
-          OrderScreen.routeName: (context) => OrderScreen(),
-          UserProductsScreen.routeName: (context) => UserProductsScreen(),
-          EditPrudcutScreen.routeName: (context) => EditPrudcutScreen(),
-        },
-      ),
-    );
+          ChangeNotifierProvider(
+            create: (ctx) => Orders(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Auth(),
+          ),
+        ],
+        child: Consumer<Auth>(
+          builder: (context, au, _) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              fontFamily: "TimesNewRoman",
+
+              colorScheme: ColorScheme(
+                brightness: Brightness.light,
+                primary: Colors.purple.shade400,
+                onPrimary: Color.fromARGB(255, 255, 255, 255),
+                secondary: Colors.purple.shade900,
+                onSecondary: Colors.purple.shade300,
+                error: Colors.red,
+                onError: Colors.black,
+                background: Colors.white,
+                onBackground: Colors.red.shade300,
+                surface: Colors.white,
+                onSurface: Color.fromARGB(255, 238, 155, 82),
+              ),
+              // colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+
+              textTheme: const TextTheme(
+                displayLarge: TextStyle(
+                    fontFamily: "Lato",
+                    fontSize: 72.0,
+                    fontWeight: FontWeight.bold),
+                titleLarge: TextStyle(
+                    fontFamily: "Lato",
+                    fontSize: 36.0,
+                    fontWeight: FontWeight.normal),
+                bodyMedium: TextStyle(
+                    fontFamily: "Lato",
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.normal),
+                bodySmall: TextStyle(
+                    fontFamily: "Lato",
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.normal),
+              ),
+            ),
+            title: "Shop App",
+            home: au.isAuthenticated ? Products_overview_Screen(): AuthScreen(),
+            routes: {
+              ProductDetailsScreen.routeName: (context) =>
+                  ProductDetailsScreen(),
+              Cart_Screen.routeName: (context) => Cart_Screen(),
+              OrderScreen.routeName: (context) => OrderScreen(),
+              UserProductsScreen.routeName: (context) => UserProductsScreen(),
+              EditPrudcutScreen.routeName: (context) => EditPrudcutScreen(),
+            },
+          ),
+        ));
   }
 }

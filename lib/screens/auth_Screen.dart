@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -103,7 +104,16 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
-  Future<void> _submit()  async{
+  void _showErrorDialoge(String msg){
+    showDialog(context: context, builder: (ctx) => AlertDialog(
+      title: Text("Error occurred "),
+      content: Text(msg),
+      actions: [
+        TextButton(onPressed: (){Navigator.of(ctx).pop();}, child: Text("ok"),),
+      ],
+    ),);
+  }
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       // Invalid!
       return;
@@ -114,10 +124,34 @@ class _AuthCardState extends State<AuthCard> {
     });
     if (_authMode == AuthMode.Login) {
       // Log user in
-      await Provider.of<Auth>(context , listen: false).signIn(_authData["email"] as String,_authData["password"] as String, );
+      await Provider.of<Auth>(context, listen: false).signIn(
+        _authData["email"] as String,
+        _authData["password"] as String,
+      );
     } else {
       // Sign user up
-      await Provider.of<Auth>(context , listen: false).signUp(_authData["email"] as String,_authData["password"] as String, );
+      try{
+
+        await Provider.of<Auth>(context, listen: false).signUp(
+          _authData["email"] as String,
+          _authData["password"] as String,
+        );
+      } catch(e) {
+        var message="Authentication failed.";
+        if(e.toString().contains("EMAIL_EXISTS")){
+          message="The email already exists";
+        }else if(e.toString().contains("INVALID_EMAIL")){
+          message="Invalid Email adress.";
+        }else if(e.toString().contains("WEAK_PASSWORD")){
+          message="Password is too weak.";
+        }else if(e.toString().contains("EMAIL_NOT_FOUND")){
+          message="Cannot find email.";
+        }else if(e.toString().contains("INVALID_PASSWORD")){
+          message="Invalid password.";
+        }
+        _showErrorDialoge(message);
+      }
+     
     }
     setState(() {
       _isLoading = false;
@@ -213,18 +247,17 @@ class _AuthCardState extends State<AuthCard> {
                     ),
                   ),
                 // OutlinedButton(onPressed: null, child: Text("sign up"),),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 TextButton(
-                  onPressed: 
-                    _switchAuthMode
-                  ,
+                  onPressed: _switchAuthMode,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                    child: Text(
+                        '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
                   ),
-   
                 ),
-          
               ],
             ),
           ),
