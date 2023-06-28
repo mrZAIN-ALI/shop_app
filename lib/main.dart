@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/productsModalProvider.dart';
 
 import './screens/products_overview_screen.dart';
 import './screens/product_Detail_Screen.dart';
@@ -27,8 +28,18 @@ class shopApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(
-            create: (ctx) => product_Provider(),
+            ChangeNotifierProvider(
+            create: (context) => Auth(),
+          ),
+          ChangeNotifierProxyProvider<Auth, product_Provider>(
+            create: (context) => product_Provider.scndry("",[]),
+            update: (context, auth, previousProduct) => product_Provider.scndry(
+              auth.getToken,
+              previousProduct!.getProductList() == null
+                  ? []
+                  : previousProduct.getProductList(),
+            ),
+            
           ),
           ChangeNotifierProvider(
             create: (context) => Cart(),
@@ -36,9 +47,9 @@ class shopApp extends StatelessWidget {
           ChangeNotifierProvider(
             create: (ctx) => Orders(),
           ),
-          ChangeNotifierProvider(
-            create: (context) => Auth(),
-          ),
+          // ChangeNotifierProvider(
+          //   create: (context) => Auth(),
+          // ),
         ],
         child: Consumer<Auth>(
           builder: (context, au, _) => MaterialApp(
@@ -81,7 +92,8 @@ class shopApp extends StatelessWidget {
               ),
             ),
             title: "Shop App",
-            home: au.isAuthenticated ? Products_overview_Screen(): AuthScreen(),
+            home:
+                au.isAuthenticated ? Products_overview_Screen() : AuthScreen(),
             routes: {
               ProductDetailsScreen.routeName: (context) =>
                   ProductDetailsScreen(),

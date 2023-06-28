@@ -8,6 +8,14 @@ import 'productsModalProvider.dart';
 import '../modals/httpDeleteProdException.dart';
 
 class product_Provider with ChangeNotifier {
+  final String _authToken;
+
+  @override
+  product_Provider.scndry(this._authToken,this._productsList);
+  // product_Provider(): _authToken="Z";
+
+  // product_Provider();
+  //
   List<Product> _productsList = [
     // Product(
     //   id: 'p1',
@@ -67,8 +75,9 @@ class product_Provider with ChangeNotifier {
   }
 
   Future<void> fetchProducts() async {
+    // print("This is Auth toke:"+_authToken);
     final url = Uri.parse(
-      "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json",
+      "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json?auth=$_authToken",
     );
     try {
       final response = await http.get(url);
@@ -86,13 +95,14 @@ class product_Provider with ChangeNotifier {
             description: value["description"],
             imageUrl: value["imageUrl"],
             price: value["price"],
-            isFavorite: value["isFvrt"],
+            isFavorite:  value["isFvrt"] == "true" ? true : false,
           ),
         );
       });
       _productsList = _prodList;
       notifyListeners();
     } catch (err) {
+      print(err);
       throw err;
     }
   }

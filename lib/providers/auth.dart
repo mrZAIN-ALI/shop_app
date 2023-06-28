@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -5,9 +7,14 @@ import 'dart:convert';
 import '../modals/httpDeleteProdException.dart';
 
 class Auth with ChangeNotifier {
-  late String _token;
-  late String _userId;
-  late DateTime _expireDate;
+  String _token="token";
+  var _userId;
+  var _expireDate;
+
+  void setTkn(String tok) {
+    _token = tok;
+    // print(_token);
+  }
 
   Future<void> _authenticate(
       String email, String password, String httpUrl) async {
@@ -21,16 +28,18 @@ class Auth with ChangeNotifier {
           {
             "email": email,
             "password": password,
-            "returnSecrueToken": true,
+            "returnSecureToken": true,
           },
         ),
       );
 
       final respnseData = json.decode(respnese.body);
+      // print(respnseData["expiresIn"]);
       if (respnseData["error"] != null) {
         throw HttpException(respnseData["error"]["message"]);
       }
-      _token = respnseData["idToken"];
+      String temp = respnseData["idToken"];
+      setTkn(temp);
       _userId = respnseData["localId"];
       _expireDate = DateTime.now().add(
         Duration(
@@ -39,6 +48,7 @@ class Auth with ChangeNotifier {
       );
       notifyListeners();
     } catch (error) {
+      print(error);
       throw error;
     }
   }
@@ -60,13 +70,13 @@ class Auth with ChangeNotifier {
   }
 
   bool get isAuthenticated {
-    return _token != null;
+    return _token != "token";
   }
 
-  String get _getToken {
+  String get getToken {
     if (_expireDate != null &&
         _expireDate.isAfter(DateTime.now()) &&
-        _token != null) {
+        _token != "token") {
       return _token;
     }
     return "No token avvailable";
