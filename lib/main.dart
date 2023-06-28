@@ -28,28 +28,29 @@ class shopApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-            ChangeNotifierProvider(
+          ChangeNotifierProvider(
             create: (context) => Auth(),
           ),
           ChangeNotifierProxyProvider<Auth, product_Provider>(
-            create: (context) => product_Provider.scndry("",[]),
+            create: (context) => product_Provider.scndry("", [],""),
             update: (context, auth, previousProduct) => product_Provider.scndry(
               auth.getToken,
               previousProduct!.getProductList() == null
                   ? []
                   : previousProduct.getProductList(),
+              auth.getUserId,
             ),
-            
           ),
           ChangeNotifierProvider(
             create: (context) => Cart(),
           ),
-          ChangeNotifierProvider(
-            create: (ctx) => Orders(),
-          ),
-          // ChangeNotifierProvider(
-          //   create: (context) => Auth(),
-          // ),
+          ChangeNotifierProxyProvider<Auth, Orders>(
+            create: (context) => Orders("default", []),
+            update: (context, auth, prevOrders) => Orders(
+              auth.getToken,
+              prevOrders!.orders == null ? [] : prevOrders.orders,
+            ),
+          )
         ],
         child: Consumer<Auth>(
           builder: (context, au, _) => MaterialApp(

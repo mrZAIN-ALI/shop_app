@@ -11,6 +11,9 @@ class Auth with ChangeNotifier {
   var _userId;
   var _expireDate;
 
+  String get getUserId{
+    return _userId;
+  }
   void setTkn(String tok) {
     _token = tok;
     // print(_token);
