@@ -3,14 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
 //
 import '../modals/httpDeleteProdException.dart';
 
 class Auth with ChangeNotifier {
   String _token="token";
   var _userId;
-  var _expireDate;
-
+  var _expireDate ;
+  Timer? _authTimer;
   String get getUserId{
     return _userId;
   }
@@ -49,6 +50,7 @@ class Auth with ChangeNotifier {
           seconds: int.parse(respnseData["expiresIn"]),
         ),
       );
+      autoSignOut();
       notifyListeners();
     } catch (error) {
       print(error);
@@ -83,5 +85,22 @@ class Auth with ChangeNotifier {
       return _token;
     }
     return "No token avvailable";
+  }
+
+  void signOut(){
+    _userId="";
+    _expireDate=null;
+    _token="token";
+    notifyListeners();
+  }
+
+  void autoSignOut(){
+    if(_authTimer!=null){
+      _authTimer!.cancel();
+      _authTimer=null;
+    }
+    final time = _expireDate as DateTime;
+    final timeToSignout=time.difference(DateTime.now()).inSeconds;
+    _authTimer=Timer(Duration(seconds: timeToSignout),signOut);
   }
 }
