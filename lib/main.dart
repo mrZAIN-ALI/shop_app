@@ -16,6 +16,7 @@ import './screens/edit_product_screen.dart';
 import './screens/auth_Screen.dart';
 import '../providers/cart.dart';
 import '../providers/auth.dart';
+import './screens/splash_Screen.dart';
 
 //
 void main() {
@@ -32,7 +33,7 @@ class shopApp extends StatelessWidget {
             create: (context) => Auth(),
           ),
           ChangeNotifierProxyProvider<Auth, product_Provider>(
-            create: (context) => product_Provider.scndry("", [],""),
+            create: (context) => product_Provider.scndry("", [], ""),
             update: (context, auth, previousProduct) => product_Provider.scndry(
               auth.getToken,
               previousProduct!.getProductList() == null
@@ -45,7 +46,7 @@ class shopApp extends StatelessWidget {
             create: (context) => Cart(),
           ),
           ChangeNotifierProxyProvider<Auth, Orders>(
-            create: (context) => Orders("default", [],""),
+            create: (context) => Orders("default", [], ""),
             update: (context, auth, prevOrders) => Orders(
               auth.getToken,
               prevOrders!.orders == null ? [] : prevOrders.orders,
@@ -94,8 +95,14 @@ class shopApp extends StatelessWidget {
               ),
             ),
             title: "Shop App",
-            home:
-                au.isAuthenticated ? Products_overview_Screen() : AuthScreen(),
+            home: au.isAuthenticated
+                ? Products_overview_Screen()
+                : FutureBuilder(
+                    future: au.autoSignin(),
+                    builder: (context, snapshot) => 
+                    snapshot.connectionState== ConnectionState.waiting? SplashScreen():
+                    AuthScreen(),
+                  ),
             routes: {
               ProductDetailsScreen.routeName: (context) =>
                   ProductDetailsScreen(),
