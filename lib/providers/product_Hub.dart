@@ -74,10 +74,11 @@ class product_Provider with ChangeNotifier {
     return [..._productsList];
   }
 
-  Future<void> fetchProducts() async {
+  Future<void> fetchProducts([filterByUser=false]) async {
     // print("This is Auth toke:"+_authToken);
+    final filterString= filterByUser==true ? "&orderBy=\"creatorID\"&equalTo=\"$_userId\"": "";
     final url = Uri.parse(
-      "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json?auth=$_authToken",
+      "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json?auth=$_authToken$filterString",
     );
     try {
       final response = await http.get(url);
@@ -117,7 +118,7 @@ class product_Provider with ChangeNotifier {
   }
 
   Future<void> addProductToLost(Product newProduct) async {
-    final url = Uri.parse(
+    final url = Uri.parse(  
       "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json?auth=$_authToken",
     );
     try {
@@ -129,6 +130,7 @@ class product_Provider with ChangeNotifier {
             "description": newProduct.description,
             "price": newProduct.price,
             "imageUrl": newProduct.imageUrl,
+            "creatorID": _userId,
           },
         ),
       );

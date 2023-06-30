@@ -8,50 +8,60 @@ import '../widgets/app_drawer.dart';
 
 class UserProductsScreen extends StatelessWidget {
   static const routeName = "/user-products";
-    
-  Future<void> refreshPage(BuildContext ctx) async{
-    await Provider.of<product_Provider>(ctx,listen: false).fetchProducts();
+
+  Future<void> refreshPage(BuildContext ctx) async {
+    await Provider.of<product_Provider>(ctx, listen: false).fetchProducts(true);
   }
+
   @override
   Widget build(BuildContext context) {
-    final productData = Provider.of<product_Provider>(context);
+    // final productData = Provider.of<product_Provider>(context);
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Your Products"),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(EditPrudcutScreen.routeName);
-              },
-              icon: Icon(Icons.add),
-            ),
-          ],
-        ),
-        drawer: AppDrawer(),
-        body: RefreshIndicator(
-          onRefresh: () => refreshPage(context),
-          child: Padding(
-            padding: EdgeInsets.all(10),
-            child: ListView.builder(
-              itemCount: productData.getProductList().length.toInt(),
-              itemBuilder: (_, index) {
-                return Column(
-                  children: [
-                    UseerProductItem(
-                      title: productData.getProductList()[index].title,
-                      imgUrl: productData.getProductList()[index].imageUrl,
-                      id: productData.getProductList()[index].id,
-                      
-                    ),
-                    Divider(),
-                  ], 
-                );
-              },
-            ),
+      appBar: AppBar(
+        title: Text("Your Products"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(EditPrudcutScreen.routeName);
+            },
+            icon: Icon(Icons.add),
           ),
-        ),
-      );
-    
+        ],
+      ),
+      drawer: AppDrawer(),
+      body: FutureBuilder(
+        future: refreshPage(context),
+        builder: (context, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : RefreshIndicator(
+                onRefresh: () => refreshPage(context),
+                child: Consumer<product_Provider>(
+                  builder:(context,productData,_)=> Padding(
+                    padding: EdgeInsets.all(10),
+                    child: ListView.builder(
+                      itemCount: productData.getProductList().length.toInt(),
+                      itemBuilder: (_, index) {
+                        return Column(
+                          children: [
+                            UseerProductItem(
+                              title: productData.getProductList()[index].title,
+                              imgUrl:
+                                  productData.getProductList()[index].imageUrl,
+                              id: productData.getProductList()[index].id,
+                            ),
+                            Divider(),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+      ),
+    );
   }
 }
