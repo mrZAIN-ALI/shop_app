@@ -40,7 +40,10 @@ class _OrderScreenState extends State<OrderScreen> {
             if (snapshot.error != null) {
               // Handle the error
               return Center(child: Text("Aww Snap Error occurred!"));
-            } else {
+            } else if(snapshot.data==null){
+              return Center(child: Text("No Order Available"));
+            }
+            else {
               return Consumer<Orders>(
                 builder: (context, orderData, child) {
                   return ListView.builder(
