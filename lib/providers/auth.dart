@@ -30,6 +30,17 @@ class Auth with ChangeNotifier {
       if (respnseData["error"] != null) {
         throw HttpException(respnseData["error"]["message"]);
       }
+
+      _token = respnseData["idToken"];
+      _userId = respnseData["localId"];
+      _expireDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(
+            respnseData["expiresIn"],
+          ),
+        ),
+      );
+      notifyListeners();
     } catch (error) {
       throw error;
     }
