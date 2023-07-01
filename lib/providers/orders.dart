@@ -20,15 +20,22 @@ class OrderItem {
 
 //
 class Orders with ChangeNotifier {
+  final _authToken;
   List<OrderItem> _orders = [];
+  final _userId;
 
+  Orders(
+    this._authToken,
+    this._orders,
+    this._userId,
+  );
   List<OrderItem> get orders {
     return [..._orders];
   }
 
   Future<void> addOrder(List<CartItem> cartItemsList, double total) async {
     final url = Uri.parse(
-      "https://demo1-abf1c-default-rtdb.firebaseio.com/orders.json",
+      "https://demo1-abf1c-default-rtdb.firebaseio.com/orders/$_userId.json?auth=$_authToken",
     );
     final timeStamp = DateTime.now();
     final response = await http.post(
@@ -62,15 +69,18 @@ class Orders with ChangeNotifier {
 
   Future<void> fetchAndSetOrder() async {
     final url = Uri.parse(
-      "https://demo1-abf1c-default-rtdb.firebaseio.com/orders.json",
+      "https://demo1-abf1c-default-rtdb.firebaseio.com/orders/$_userId.json?auth=$_authToken",
     );
     final response = await http.get(url);
     // print(
     //   json.decode(response.body),
     // );
     List<OrderItem> dummyList = [];
+    if(response.body==null|| response.body=="null"){
+      return ;
+    }
     final orderedProd = json.decode(response.body) as Map<String, dynamic>;
-    if(orderedProd== null){
+    if (orderedProd == null) {
       print("lol");
       return;
     }
@@ -95,7 +105,7 @@ class Orders with ChangeNotifier {
         );
       },
     );
-    _orders=dummyList.reversed.toList();
+    _orders = dummyList.reversed.toList();
     notifyListeners();
   }
 }

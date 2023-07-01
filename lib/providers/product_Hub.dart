@@ -8,6 +8,14 @@ import 'productsModalProvider.dart';
 import '../modals/httpDeleteProdException.dart';
 
 class product_Provider with ChangeNotifier {
+  final String _authToken;
+  final _userId;
+  @override
+  product_Provider.scndry(this._authToken, this._productsList, this._userId);
+  // product_Provider(): _authToken="Z";
+
+  // product_Provider();
+  //
   List<Product> _productsList = [
     // Product(
     //   id: 'p1',
@@ -66,40 +74,52 @@ class product_Provider with ChangeNotifier {
     return [..._productsList];
   }
 
-  Future<void> fetchProducts() async {
+  Future<void> fetchProducts([filterByUser=false]) async {
+    // print("This is Auth toke:"+_authToken);
+    final filterString= filterByUser==true ? "&orderBy=\"creatorID\"&equalTo=\"$_userId\"": "";
     final url = Uri.parse(
-      "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json",
+      "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json?auth=$_authToken$filterString",
     );
     try {
       final response = await http.get(url);
       final List<Product> _prodList = [];
       final _fetchedProduts =
           json.decode(response.body) as Map<String, dynamic>;
-      if(_fetchedProduts==null){
+      if (_fetchedProduts == null) {
         return;
       }
-      _fetchedProduts.forEach((key, value) {
+      final favoriteStatusResponse = await http.get(
+        Uri.parse(
+          "https://demo1-abf1c-default-rtdb.firebaseio.com/userFavorites/$_userId.json?auth=$_authToken",
+        ),
+      );
+      final favouriteData = json.decode(favoriteStatusResponse.body);
+      _fetchedProduts.forEach((prodId, value) {
         _prodList.add(
           Product(
-            id: key,
+            id: prodId,
             title: value["title"],
             description: value["description"],
             imageUrl: value["imageUrl"],
             price: value["price"],
-            isFavorite: value["isFvrt"],
+            isFavorite: favouriteData == null
+                ? false
+                : favouriteData[prodId] ?? false,
+            authToken: _authToken,
           ),
         );
       });
       _productsList = _prodList;
       notifyListeners();
     } catch (err) {
+      print(err);
       throw err;
     }
   }
 
   Future<void> addProductToLost(Product newProduct) async {
-    final url = Uri.parse(
-      "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json",
+    final url = Uri.parse(  
+      "https://demo1-abf1c-default-rtdb.firebaseio.com/products.json?auth=$_authToken",
     );
     try {
       final response = await http.post(
@@ -110,7 +130,7 @@ class product_Provider with ChangeNotifier {
             "description": newProduct.description,
             "price": newProduct.price,
             "imageUrl": newProduct.imageUrl,
-            "isFvrt": newProduct.isFavorite,
+            "creatorID": _userId,
           },
         ),
       );
@@ -124,7 +144,7 @@ class product_Provider with ChangeNotifier {
       );
       _productsList.add(addThisProdcut);
       notifyListeners();
-      // hell'
+      // h
       print(
         json.decode(response.body),
       );
@@ -147,7 +167,7 @@ class product_Provider with ChangeNotifier {
 
   Future<void> updateProduct(String id, Product updatedProd) async {
     final url = Uri.parse(
-      "https://demo1-abf1c-default-rtdb.firebaseio.com/products/$id.json",
+      "https://demo1-abf1c-default-rtdb.firebaseio.com/products/$id.json?auth=$_authToken",
     );
     final indexOfProductToUPdate =
         _productsList.indexWhere((element) => element.id == id);
@@ -172,7 +192,7 @@ class product_Provider with ChangeNotifier {
 
   Future<void> deleteProductById(String id) async {
     final url = Uri.parse(
-      "https://demo1-abf1c-default-rtdb.firebaseio.com/products/$id.json",
+      "https://demo1-abf1c-default-rtdb.firebaseio.com/products/$id.json?auth=$_authToken",
     );
     final indexOfProduct =
         _productsList.indexWhere((element) => element.id == id);

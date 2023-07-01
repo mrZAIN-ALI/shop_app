@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/productsModalProvider.dart';
 
 import './screens/products_overview_screen.dart';
 import './screens/product_Detail_Screen.dart';
@@ -15,6 +16,7 @@ import './screens/edit_product_screen.dart';
 import './screens/auth_Screen.dart';
 import '../providers/cart.dart';
 import '../providers/auth.dart';
+import './screens/splash_Screen.dart';
 
 //
 void main() {
@@ -28,17 +30,29 @@ class shopApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (ctx) => product_Provider(),
+            create: (context) => Auth(),
+          ),
+          ChangeNotifierProxyProvider<Auth, product_Provider>(
+            create: (context) => product_Provider.scndry("", [], ""),
+            update: (context, auth, previousProduct) => product_Provider.scndry(
+              auth.getToken,
+              previousProduct!.getProductList() == null
+                  ? []
+                  : previousProduct.getProductList(),
+              auth.getUserId,
+            ),
           ),
           ChangeNotifierProvider(
             create: (context) => Cart(),
           ),
-          ChangeNotifierProvider(
-            create: (ctx) => Orders(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => Auth(),
-          ),
+          ChangeNotifierProxyProvider<Auth, Orders>(
+            create: (context) => Orders("default", [], ""),
+            update: (context, auth, prevOrders) => Orders(
+              auth.getToken,
+              prevOrders!.orders == null ? [] : prevOrders.orders,
+              auth.getUserId,
+            ),
+          )
         ],
         child: Consumer<Auth>(
           builder: (context, au, _) => MaterialApp(
@@ -81,7 +95,14 @@ class shopApp extends StatelessWidget {
               ),
             ),
             title: "Shop App",
-            home: au.isAuthenticated ? Products_overview_Screen(): AuthScreen(),
+            home: au.isAuthenticated
+                ? Products_overview_Screen()
+                : FutureBuilder(
+                    future: au.autoSignin(),
+                    builder: (context, snapshot) => 
+                    snapshot.connectionState== ConnectionState.waiting? SplashScreen():
+                    AuthScreen(),
+                  ),
             routes: {
               ProductDetailsScreen.routeName: (context) =>
                   ProductDetailsScreen(),
