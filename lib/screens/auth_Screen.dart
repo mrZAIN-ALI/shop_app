@@ -94,7 +94,8 @@ class AuthCard extends StatefulWidget {
   _AuthCardState createState() => _AuthCardState();
 }
 
-class _AuthCardState extends State<AuthCard> {
+class _AuthCardState extends State<AuthCard>
+    with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
   Map<String, String> _authData = {
@@ -103,16 +104,47 @@ class _AuthCardState extends State<AuthCard> {
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
+  AnimationController? _animContorller;
+  Animation<Size>? _heightAnimation;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _animContorller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+    _heightAnimation = Tween<Size>(
+      begin: Size(double.infinity, 290),
+      end: Size(double.infinity, 320),
+    ).animate(
+      CurvedAnimation(
+        parent: _animContorller!,
+        curve: Curves.linear,
+      ),
+    );
 
-  void _showErrorDialoge(String msg){
-    showDialog(context: context, builder: (ctx) => AlertDialog(
-      title: Text("Error occurred "),
-      content: Text(msg),
-      actions: [
-        TextButton(onPressed: (){Navigator.of(ctx).pop();}, child: Text("ok"),),
-      ],
-    ),);
+    _heightAnimation!.addListener(() => setState(() {}));
   }
+
+  void _showErrorDialoge(String msg) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text("Error occurred "),
+        content: Text(msg),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: Text("ok"),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       // Invalid!
@@ -130,28 +162,26 @@ class _AuthCardState extends State<AuthCard> {
       );
     } else {
       // Sign user up
-      try{
-
+      try {
         await Provider.of<Auth>(context, listen: false).signUp(
           _authData["email"] as String,
           _authData["password"] as String,
         );
-      } catch(e) {
-        var message="Authentication failed.";
-        if(e.toString().contains("EMAIL_EXISTS")){
-          message="The email already exists";
-        }else if(e.toString().contains("INVALID_EMAIL")){
-          message="Invalid Email adress.";
-        }else if(e.toString().contains("WEAK_PASSWORD")){
-          message="Password is too weak.";
-        }else if(e.toString().contains("EMAIL_NOT_FOUND")){
-          message="Cannot find email.";
-        }else if(e.toString().contains("INVALID_PASSWORD")){
-          message="Invalid password.";
+      } catch (e) {
+        var message = "Authentication failed.";
+        if (e.toString().contains("EMAIL_EXISTS")) {
+          message = "The email already exists";
+        } else if (e.toString().contains("INVALID_EMAIL")) {
+          message = "Invalid Email adress.";
+        } else if (e.toString().contains("WEAK_PASSWORD")) {
+          message = "Password is too weak.";
+        } else if (e.toString().contains("EMAIL_NOT_FOUND")) {
+          message = "Cannot find email.";
+        } else if (e.toString().contains("INVALID_PASSWORD")) {
+          message = "Invalid password.";
         }
         _showErrorDialoge(message);
       }
-     
     }
     setState(() {
       _isLoading = false;
@@ -164,10 +194,14 @@ class _AuthCardState extends State<AuthCard> {
       setState(() {
         _authMode = AuthMode.Signup;
       });
+      _animContorller!.forward();
     } else {
-      setState(() {
-        _authMode = AuthMode.Login;
-      });
+      setState(
+        () {
+          _authMode = AuthMode.Login;
+        },
+      );
+      _animContorller!.reverse();
     }
   }
 
@@ -180,9 +214,8 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: _authMode == AuthMode.Signup ? 320 : 300,
-        constraints:
-            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 290),
+        height: _heightAnimation!.value.height,
+        constraints: BoxConstraints(minHeight: _heightAnimation!.value.height),
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(16.0),
         child: Form(

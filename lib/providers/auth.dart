@@ -13,6 +13,7 @@ class Auth with ChangeNotifier {
   var _userId;
   DateTime? _expireDate;
   Timer? _authTimer;
+
   String get getUserId {
     return _userId;
   }
