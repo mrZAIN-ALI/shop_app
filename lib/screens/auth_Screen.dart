@@ -242,7 +242,7 @@ class _AuthCardState extends State<AuthCard>
                       }
                       return null;
                       return null;
-                    }
+                    },
                     onSaved: (value) {
                       _authData['email'] = value as String;
                     },
