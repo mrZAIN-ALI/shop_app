@@ -220,9 +220,8 @@ class _AuthCardState extends State<AuthCard>
         borderRadius: BorderRadius.circular(10.0),
       ),
       elevation: 8.0,
-      child: AnimatedBuilder(
-        animation: _heightAnimation as Listenable,
-        builder: (context, child) => Container(
+      child: AnimatedContainer(
+          duration: Duration(milliseconds: 300),
           height: _heightAnimation!.value.height,
           constraints:
               BoxConstraints(minHeight: _heightAnimation!.value.height),
@@ -240,8 +239,7 @@ class _AuthCardState extends State<AuthCard>
                       if (value!.isEmpty || !value.contains('@')) {
                         return 'Invalid email!';
                       }
-                      return null;
-                      return null;
+                      return null;                      
                     },
                     onSaved: (value) {
                       _authData['email'] = value as String;
@@ -307,7 +305,7 @@ class _AuthCardState extends State<AuthCard>
             ),
           ),
         ),
-      ),
-    );
+      );
+    
   }
 }
