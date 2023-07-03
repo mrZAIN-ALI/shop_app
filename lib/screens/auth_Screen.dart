@@ -116,7 +116,7 @@ class _AuthCardState extends State<AuthCard>
     );
     _heightAnimation = Tween<Size>(
       begin: Size(double.infinity, 290),
-      end: Size(double.infinity, 320),
+      end: Size(double.infinity, 350),
     ).animate(
       CurvedAnimation(
         parent: _animContorller!,
@@ -125,6 +125,13 @@ class _AuthCardState extends State<AuthCard>
     );
 
     _heightAnimation!.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _animContorller!.dispose();
   }
 
   void _showErrorDialoge(String msg) {
@@ -213,85 +220,90 @@ class _AuthCardState extends State<AuthCard>
         borderRadius: BorderRadius.circular(10.0),
       ),
       elevation: 8.0,
-      child: Container(
-        height: _heightAnimation!.value.height,
-        constraints: BoxConstraints(minHeight: _heightAnimation!.value.height),
-        width: deviceSize.width * 0.75,
-        padding: EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'E-Mail'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value!.isEmpty || !value.contains('@')) {
-                      return 'Invalid email!';
-                    }
-                    return null;
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _authData['email'] = value as String;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Password'),
-                  obscureText: true,
-                  controller: _passwordController,
-                  validator: (value) {
-                    if (value!.isEmpty || value.length < 5) {
-                      return 'Password is too short!';
-                    }
-                  },
-                  onSaved: (value) {
-                    _authData['password'] = value as String;
-                  },
-                ),
-                if (_authMode == AuthMode.Signup)
+      child: AnimatedBuilder(
+        animation: _heightAnimation as Listenable,
+        builder: (context, child) => Container(
+          height: _heightAnimation!.value.height,
+          constraints:
+              BoxConstraints(minHeight: _heightAnimation!.value.height),
+          width: deviceSize.width * 0.75,
+          padding: EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
                   TextFormField(
-                    enabled: _authMode == AuthMode.Signup,
-                    decoration: InputDecoration(labelText: 'Confirm Password'),
-                    obscureText: true,
-                    validator: _authMode == AuthMode.Signup
-                        ? (value) {
-                            if (value != _passwordController.text) {
-                              return 'Passwords do not match!';
-                            }
-                          }
-                        : null,
+                    decoration: InputDecoration(labelText: 'E-Mail'),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value!.isEmpty || !value.contains('@')) {
+                        return 'Invalid email!';
+                      }
+                      return null;
+                      return null;
+                    }
+                    onSaved: (value) {
+                      _authData['email'] = value as String;
+                    },
                   ),
-                SizedBox(
-                  height: 20,
-                ),
-                if (_isLoading)
-                  CircularProgressIndicator()
-                else
-                  FloatingActionButton.extended(
-                    onPressed: _submit,
-                    label: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        _authMode == AuthMode.Login ? "SIGN IN" : "SIGN UP",
-                        textAlign: TextAlign.center,
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Password'),
+                    obscureText: true,
+                    controller: _passwordController,
+                    validator: (value) {
+                      if (value!.isEmpty || value.length < 5) {
+                        return 'Password is too short!';
+                      }
+                    },
+                    onSaved: (value) {
+                      _authData['password'] = value as String;
+                    },
+                  ),
+                  if (_authMode == AuthMode.Signup)
+                    TextFormField(
+                      enabled: _authMode == AuthMode.Signup,
+                      decoration:
+                          InputDecoration(labelText: 'Confirm Password'),
+                      obscureText: true,
+                      validator: _authMode == AuthMode.Signup
+                          ? (value) {
+                              if (value != _passwordController.text) {
+                                return 'Passwords do not match!';
+                              }
+                            }
+                          : null,
+                    ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  if (_isLoading)
+                    CircularProgressIndicator()
+                  else
+                    FloatingActionButton.extended(
+                      onPressed: _submit,
+                      label: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          _authMode == AuthMode.Login ? "SIGN IN" : "SIGN UP",
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
+                  // OutlinedButton(onPressed: null, child: Text("sign up"),),
+                  SizedBox(
+                    height: 10,
                   ),
-                // OutlinedButton(onPressed: null, child: Text("sign up"),),
-                SizedBox(
-                  height: 10,
-                ),
-                TextButton(
-                  onPressed: _switchAuthMode,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                        '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                  TextButton(
+                    onPressed: _switchAuthMode,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                          '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
