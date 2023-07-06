@@ -221,91 +221,90 @@ class _AuthCardState extends State<AuthCard>
       ),
       elevation: 8.0,
       child: AnimatedContainer(
-          duration: Duration(milliseconds: 300),
-          height: _heightAnimation!.value.height,
-          constraints:
-              BoxConstraints(minHeight: _heightAnimation!.value.height),
-          width: deviceSize.width * 0.75,
-          padding: EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
+        duration: Duration(milliseconds: 300),
+        curve: Curves.linear,
+        height: _authMode == AuthMode.Signup ? 350 : 290,
+        constraints:
+            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 350 : 290),
+        width: deviceSize.width * 0.75,
+        padding: EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'E-Mail'),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value!.isEmpty || !value.contains('@')) {
+                      return 'Invalid email!';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _authData['email'] = value as String;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                  controller: _passwordController,
+                  validator: (value) {
+                    if (value!.isEmpty || value.length < 5) {
+                      return 'Password is too short!';
+                    }
+                  },
+                  onSaved: (value) {
+                    _authData['password'] = value as String;
+                  },
+                ),
+                if (_authMode == AuthMode.Signup)
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'E-Mail'),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value!.isEmpty || !value.contains('@')) {
-                        return 'Invalid email!';
-                      }
-                      return null;                      
-                    },
-                    onSaved: (value) {
-                      _authData['email'] = value as String;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Password'),
+                    enabled: _authMode == AuthMode.Signup,
+                    decoration: InputDecoration(labelText: 'Confirm Password'),
                     obscureText: true,
-                    controller: _passwordController,
-                    validator: (value) {
-                      if (value!.isEmpty || value.length < 5) {
-                        return 'Password is too short!';
-                      }
-                    },
-                    onSaved: (value) {
-                      _authData['password'] = value as String;
-                    },
-                  ),
-                  if (_authMode == AuthMode.Signup)
-                    TextFormField(
-                      enabled: _authMode == AuthMode.Signup,
-                      decoration:
-                          InputDecoration(labelText: 'Confirm Password'),
-                      obscureText: true,
-                      validator: _authMode == AuthMode.Signup
-                          ? (value) {
-                              if (value != _passwordController.text) {
-                                return 'Passwords do not match!';
-                              }
+                    validator: _authMode == AuthMode.Signup
+                        ? (value) {
+                            if (value != _passwordController.text) {
+                              return 'Passwords do not match!';
                             }
-                          : null,
-                    ),
-                  SizedBox(
-                    height: 20,
+                          }
+                        : null,
                   ),
-                  if (_isLoading)
-                    CircularProgressIndicator()
-                  else
-                    FloatingActionButton.extended(
-                      onPressed: _submit,
-                      label: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          _authMode == AuthMode.Login ? "SIGN IN" : "SIGN UP",
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  // OutlinedButton(onPressed: null, child: Text("sign up"),),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextButton(
-                    onPressed: _switchAuthMode,
-                    child: Padding(
+                SizedBox(
+                  height: 20,
+                ),
+                if (_isLoading)
+                  CircularProgressIndicator()
+                else
+                  FloatingActionButton.extended(
+                    onPressed: _submit,
+                    label: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                          '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                        _authMode == AuthMode.Login ? "SIGN IN" : "SIGN UP",
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
-                ],
-              ),
+                // OutlinedButton(onPressed: null, child: Text("sign up"),),
+                SizedBox(
+                  height: 10,
+                ),
+                TextButton(
+                  onPressed: _switchAuthMode,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                        '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-      );
-    
+      ),
+    );
   }
 }

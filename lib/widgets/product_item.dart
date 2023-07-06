@@ -5,6 +5,7 @@ import 'package:shop_app/providers/cart.dart';
 import 'package:shop_app/providers/productsModalProvider.dart';
 
 import '../screens/product_Detail_Screen.dart';
+
 class Product_item extends StatelessWidget {
   // const Product_item({super.key});
   // final String id;
@@ -17,7 +18,8 @@ class Product_item extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
-    final userId=Provider.of<Auth>(context ,listen:  false).getUserId;
+    final userId = Provider.of<Auth>(context, listen: false).getUserId;
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: GridTile(
@@ -26,9 +28,19 @@ class Product_item extends StatelessWidget {
             Navigator.of(context).pushNamed(ProductDetailsScreen.routeName,
                 arguments: product.id);
           },
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
+          child: Hero(
+            tag: product.id,
+            child: FadeInImage(
+              placeholder: AssetImage("assests/images/product-placeholder.png"),
+              fit: BoxFit.cover,
+              // image: Image.network(
+              //   product.imageUrl,
+              //   fit: BoxFit.cover,
+              // ),
+              image: NetworkImage(
+                product.imageUrl,
+              ),
+            ),
           ),
         ),
         footer: GridTileBar(
