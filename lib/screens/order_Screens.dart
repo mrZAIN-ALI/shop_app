@@ -6,7 +6,6 @@ import '../widgets/orderItem.dart' as ord;
 import '../widgets/app_drawer.dart';
 
 class OrderScreen extends StatefulWidget {
-  // const OrderScreen({super.key});
   static const routeName = "/order";
 
   @override
@@ -14,17 +13,18 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  late Future _odersFuture;
+  late Future<void> _ordersFuture;
 
-  Future obtianFuture(){
+  Future<void> obtainFuture() {
     return Provider.of<Orders>(context, listen: false).fetchAndSetOrder();
   }
+
   @override
   void initState() {
-    // TODO: implement initState
-    _odersFuture=obtianFuture();
+    _ordersFuture = obtainFuture();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,34 +32,35 @@ class _OrderScreenState extends State<OrderScreen> {
         title: Text("Your Orders"),
       ),
       body: FutureBuilder(
-        future: _odersFuture,
+        future: _ordersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else {
             if (snapshot.error != null) {
               // Handle the error
+              print(snapshot.error);
               return Center(child: Text("Aww Snap Error occurred!"));
-            } else if(snapshot.data==null){
-              return Center(child: Text("No Order Available"));
-            }
-            else {
+            } else {
               return Consumer<Orders>(
                 builder: (context, orderData, child) {
-                  return ListView.builder(
-                    itemCount: orderData.orders.length,
-                    itemBuilder: (context, index) => ord.OrderItem(
-                      
-                      order: orderData.orders[index],
-                    ),
-                  );
+                  if (orderData.orders.isEmpty) {
+                    return Center(child: Text("No Order Available"));
+                  } else {
+                    return ListView.builder(
+                      itemCount: orderData.orders.length,
+                      itemBuilder: (context, index) => ord.OrderItem(
+                        order: orderData.orders[index],
+                      ),
+                    );
+                  }
                 },
               );
             }
           }
         },
       ),
-      drawer: const  AppDrawer(),
+      drawer: AppDrawer(),
     );
   }
 }
