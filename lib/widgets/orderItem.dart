@@ -18,10 +18,13 @@ class _OrderItemState extends State<OrderItem> {
   Widget build(BuildContext context) {
     // Provider.of<Orders>(context);
     return AnimatedContainer(
+      margin: EdgeInsets.all(10),
+      // color: Colors.amber,
       duration: Duration(milliseconds: 300),
-      height: _expanded ? min(widget.order.items.length * 20.0 + 50, 180) : 100,
+      height: _expanded ? min(widget.order.items.length * 20.0 + 210, 280) : 150,
       child: Card(
-        margin: EdgeInsets.all(10),
+        // color: Colors.blue,
+        margin: EdgeInsets.all(5),
         child: Padding(
           padding: EdgeInsets.all(10),
           child: Column(
@@ -49,31 +52,34 @@ class _OrderItemState extends State<OrderItem> {
               Divider(),
               //
               
-                AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
-                  padding: EdgeInsets.all(10),
-                  height: _expanded ? min(widget.order.items.length * 20.0 + 50, 180) : 100 ,
-                  //
-                  child: ListView(
-                    padding: EdgeInsets.symmetric(vertical: 5),
-                      children: widget.order.items
-                          .map(
-                            (e) => Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  e.title,
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                                Text(
-                                  e.quantity.toString() +
-                                      "X   \$" +
-                                      e.price.toString(),
-                                ),
-                              ],
-                            ),
-                          )
-                          .toList() as List<Widget>),
+                Flexible(
+                  child: AnimatedContainer(
+                    // color: Colors.green,
+                    duration: Duration(milliseconds: 300),
+                    padding: EdgeInsets.all(10),
+                    height: _expanded ? min(widget.order.items.length * 20.0 + 210,280) : 0 ,
+                    //
+                    child: ListView(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                        children: widget.order.items
+                            .map(
+                              (e) => Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    e.title,
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                  Text(
+                                    e.quantity.toString() +
+                                        "X   \$" +
+                                        e.price.toString(),
+                                  ),
+                                ],
+                              ),
+                            )
+                            .toList() as List<Widget>),
+                  ),
                 ),
                 
             ],
