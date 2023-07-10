@@ -3,7 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/productsModalProvider.dart';
 
 import './screens/products_overview_screen.dart';
 import './screens/product_Detail_Screen.dart';
@@ -17,6 +16,8 @@ import './screens/auth_Screen.dart';
 import '../providers/cart.dart';
 import '../providers/auth.dart';
 import './screens/splash_Screen.dart';
+import './providers/productsModalProvider.dart';
+import './helpers/cutomRouteTransationHelper.dart';
 
 //
 void main() {
@@ -58,6 +59,7 @@ class shopApp extends StatelessWidget {
           builder: (context, au, _) => MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
+
               fontFamily: "TimesNewRoman",
 
               colorScheme: ColorScheme(
@@ -93,6 +95,11 @@ class shopApp extends StatelessWidget {
                     fontSize: 20.0,
                     fontWeight: FontWeight.normal),
               ),
+
+              pageTransitionsTheme: PageTransitionsTheme(builders: {
+                TargetPlatform.android : customPageTranstion(),
+                TargetPlatform.iOS : customPageTranstion(), 
+              },),
             ),
             title: "Shop App",
             home: au.isAuthenticated
